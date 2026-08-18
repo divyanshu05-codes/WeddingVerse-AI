@@ -34,3 +34,9 @@ VITE_API_URL=http://localhost:3000
 * 👥 Guest Management
 * 🔄 Backend API Integration
 * 📱 Responsive UI
+
+## 🔗 Backend
+
+The client communicates with the **WeddingVerse AI backend** through REST APIs using Axios.
+
+> **WeddingVerse AI — Plan smarter. Organize better. Celebrate stress-free. 💍**
