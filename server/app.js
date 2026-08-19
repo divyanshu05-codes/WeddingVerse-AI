@@ -1,9 +1,9 @@
+require(dotenv).config()
 const express = require("express");
 const errorHandler = require("./src/middlewares/error.middleware");
 const authRoutes = require("./src/routes/auth.routes");
 const weddingRoutes = require("./src/routes/wedding.routes");
 const userRoutes = require("./src/routes/user.routes");
-const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const guestRoutes = require("./src/routes/guest.routes");
@@ -14,49 +14,55 @@ const aiRoutes = require("./src/routes/ai.routes");
 const taskRoutes = require("./src/routes/task.routes");
 const notificationRoutes = require("./src/routes/notification.routes");
 
-dotenv.config();
 const app = express();
-
 const allowedOrigins = [
-  "http://localhost:5173",
-  process.env.CLIENT_URL,
-].filter(Boolean);
+    "http://localhost:5173",
+    "https://wedding-verse-ai.vercel.app"
+];
 
-app.use(
-  cors({
+route.use(cors({
     origin: (origin, callback) => {
-      // Allow requests without an Origin header
-      // such as Postman/server-to-server requests.
-      if (!origin) {
-        return callback(null, true);
-      }
 
-      if (allowedOrigins.includes(origin)) {
-        return callback(null, true);
-      }
+        // Postman / server-to-server
+        if (!origin) {
+            return callback(null, true);
+        }
 
-      return callback(
-        new Error("Not allowed by CORS")
-      );
+        if (allowedOrigins.includes(origin)) {
+            return callback(null, true);
+        }
+
+        return callback(
+            new Error(
+                "CORS origin not allowed."
+            )
+        );
     },
 
     credentials: true,
 
     methods: [
-      "GET",
-      "POST",
-      "PUT",
-      "PATCH",
-      "DELETE",
-      "OPTIONS",
+        "GET",
+        "POST",
+        "PUT",
+        "PATCH",
+        "DELETE",
+        "OPTIONS"
     ],
 
     allowedHeaders: [
-      "Content-Type",
-      "Authorization",
+        "Content-Type",
+        "Authorization",
+        "X-Request-ID"
     ],
-  })
-);
+
+    exposedHeaders: [
+        "X-RateLimit-Limit",
+        "X-RateLimit-Remaining",
+        "Retry-After"
+    ]
+}));
+
 
 app.use(cookieParser());
 app.use(express.json());
