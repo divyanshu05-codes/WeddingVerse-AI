@@ -1,3 +1,4 @@
+require("dotenv").config()
 const express = require("express");
 const errorHandler = require("./src/middlewares/error.middleware");
 const authRoutes = require("./src/routes/auth.routes");
@@ -19,7 +20,7 @@ const allowedOrigins = [
     "https://wedding-verse-ai.vercel.app"
 ];
 
-route.use(cors({
+app.use(cors({
     origin: (origin, callback) => {
 
         // Postman / server-to-server
