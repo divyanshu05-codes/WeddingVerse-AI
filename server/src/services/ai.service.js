@@ -1,8 +1,16 @@
 const { GoogleGenAI } = require("@google/genai");
 
-const ai = new GoogleGenAI({
-  apiKey: process.env.GEMINI_API_KEY,
-});
+const getAIClient = () => {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    const error = new Error(
+      "Gemini API key is not configured. Please add GEMINI_API_KEY to server/.env to use AI features."
+    );
+    error.statusCode = 400;
+    throw error;
+  }
+  return new GoogleGenAI({ apiKey });
+};
 
 // ======================================================
 // GENERATE WEDDING PLAN
@@ -66,7 +74,7 @@ Make the recommendations practical and specific to the information provided.
 Do not invent specific vendors, prices, addresses, or facts that were not provided.
 `;
 
-  const response = await ai.models.generateContent({
+  const response = await getAIClient().models.generateContent({
     model: "gemini-3.6-flash",
     contents: prompt,
   });
@@ -185,7 +193,7 @@ Return JSON in exactly this format:
 ]
 `;
 
-  const response = await ai.models.generateContent({
+  const response = await getAIClient().models.generateContent({
     model: "gemini-3.6-flash",
     contents: prompt,
   });
@@ -329,7 +337,7 @@ Important rules:
 - Calculate percentages only when the required numbers are available.
 `;
 
-  const response = await ai.models.generateContent({
+  const response = await getAIClient().models.generateContent({
     model: "gemini-3.6-flash",
     contents: prompt,
   });
@@ -467,7 +475,7 @@ Important rules:
 `;
 
   const response =
-    await ai.models.generateContent({
+    await getAIClient().models.generateContent({
       model: "gemini-3.6-flash",
       contents: prompt,
     });
@@ -675,7 +683,7 @@ IMPORTANT RULES:
 `;
 
   const response =
-    await ai.models.generateContent({
+    await getAIClient().models.generateContent({
       model: "gemini-3.6-flash",
       contents: prompt,
     });
@@ -822,7 +830,7 @@ ${customMessage || "No custom message provided."}
 `;
 
   const response =
-    await ai.models.generateContent({
+    await getAIClient().models.generateContent({
       model: "gemini-3.6-flash",
       contents: prompt,
     });
@@ -998,7 +1006,7 @@ Return a practical vendor-management analysis.
 `;
 
   const response =
-    await ai.models.generateContent({
+    await getAIClient().models.generateContent({
       model: "gemini-3.6-flash",
       contents: prompt,
     });
@@ -1234,7 +1242,7 @@ instead of guessing.
 `;
 
   const response =
-    await ai.models.generateContent({
+    await getAIClient().models.generateContent({
       model: "gemini-3.6-flash",
       contents: prompt,
     });
@@ -1772,7 +1780,7 @@ Focus especially on:
 `;
 
   const response =
-    await ai.models.generateContent({
+    await getAIClient().models.generateContent({
       model: "gemini-3.6-flash",
       contents: prompt,
     });

@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
-import LoginForm from "./features/auth/components/LoginForm";
-import RegisterForm from "./features/auth/components/RegisterForm";
+import Login from "./features/auth/pages/Login";
+import Register from "./features/auth/pages/Register";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import Dashboard from "./features/dashboard/pages/Dashboard";
 import WeddingDashboard from "./features/wedding/pages/WeddingDashboard";
@@ -34,9 +34,12 @@ import WeddingInsights from "./features/ai/pages/WeddingInsights";
 import NotificationPage from "./features/notifications/pages/NotificationPage";
 import ForgotPassword from "./features/auth/pages/ForgotPassword";
 import ResetPassword from "./features/auth/pages/ResetPassword";
+import NotFound from "./components/NotFound";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
+    <>
     <Routes>
 
       {/* ==================================================
@@ -45,20 +48,17 @@ function App() {
 
       <Route
         path="/"
-        element={
-          <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <LoginForm />
-          </div>
-        }
+        element={<Login />}
+      />
+
+      <Route
+        path="/login"
+        element={<Login />}
       />
 
       <Route
         path="/register"
-        element={
-          <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <RegisterForm />
-          </div>
-        }
+        element={<Register />}
       />
 
       {/* ==================================================
@@ -132,6 +132,11 @@ function App() {
 
         <Route
           path="/weddings/:weddingId/ai/plan"
+          element={<WeddingPlanResult />}
+        />
+
+        <Route
+          path="/weddings/:weddingId/ai-plan"
           element={<WeddingPlanResult />}
         />
 
@@ -295,7 +300,18 @@ function App() {
 
       </Route>
 
+      {/* ==================================================
+          404 NOT FOUND
+      ================================================== */}
+
+      <Route
+        path="*"
+        element={<NotFound />}
+      />
+
     </Routes>
+    <Toaster position="top-right" />
+    </>
   );
 }
 

@@ -1,446 +1,121 @@
+import { useState } from "react";
 import {
   Search,
   Sparkles,
   ChevronDown,
+  Plus,
+  Heart,
+  Crown,
 } from "lucide-react";
-
+import { Link, useLocation, useParams } from "react-router-dom";
 import NotificationDropdown from "../../features/notifications/components/NotificationDropdown";
-
 import { useAuth } from "../../context/useAuth";
-import { useLocation, useParams } from "react-router-dom";
 
 function Navbar() {
   const { user } = useAuth();
   const location = useLocation();
   const { weddingId } = useParams();
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const firstLetter =
-    user?.fullName?.charAt(0)?.toUpperCase() || "U";
-
-  // =====================================================
-  // PAGE TITLE
-  // =====================================================
+  const firstLetter = user?.fullName?.charAt(0)?.toUpperCase() || "U";
 
   const getPageTitle = () => {
-    if (location.pathname === "/dashboard") {
-      return "Dashboard";
-    }
+    if (location.pathname === "/dashboard") return "Command Center";
+    if (location.pathname === "/weddings") return "My Weddings";
+    if (location.pathname.includes("/guests/new")) return "Add New Guest";
+    if (location.pathname.includes("/guests")) return "Guest Directory";
+    if (location.pathname.includes("/vendors/new")) return "Add New Vendor";
+    if (location.pathname.includes("/vendors")) return "Vendor Management";
+    if (location.pathname.includes("/budget/new")) return "Add New Expense";
+    if (location.pathname.includes("/budget")) return "Budget & Expenses";
+    if (location.pathname.includes("/tasks")) return "Planning Checklist";
+    if (location.pathname.includes("/timeline-advisor")) return "AI Timeline Advisor";
+    if (location.pathname.includes("/guest-analyzer")) return "AI Guest Analyzer";
+    if (location.pathname.includes("/invitation-generator")) return "Invitation Generator";
+    if (location.pathname.includes("/vendor-assistant")) return "AI Vendor Assistant";
+    if (location.pathname.includes("/chatbot")) return "AI Wedding Chatbot";
+    if (location.pathname.includes("/insights")) return "AI Health Insights";
+    if (location.pathname.includes("/ai/plan") || location.pathname.includes("/ai-plan")) return "AI Wedding Plan Roadmap";
+    if (location.pathname.includes("/ai")) return "AI Wedding Planner";
+    if (location.pathname.includes("/edit")) return "Edit Wedding";
+    if (location.pathname.includes("/new")) return "Create Wedding";
 
-    if (location.pathname === "/weddings") {
-      return "My Weddings";
-    }
-
-    if (location.pathname.includes("/guests")) {
-      return "Guests";
-    }
-
-    if (location.pathname.includes("/vendors")) {
-      return "Vendors";
-    }
-
-    if (location.pathname.includes("/budget")) {
-      return "Budget";
-    }
-
-    if (location.pathname.includes("/tasks")) {
-      return "Planning Tasks";
-    }
-
-    if (location.pathname.includes("/timeline-advisor")) {
-      return "Timeline Advisor";
-    }
-
-    if (location.pathname.includes("/guest-analyzer")) {
-      return "Guest Analyzer";
-    }
-
-    if (
-      location.pathname.includes(
-        "/invitation-generator"
-      )
-    ) {
-      return "Invitation Generator";
-    }
-
-    if (
-      location.pathname.includes(
-        "/vendor-assistant"
-      )
-    ) {
-      return "Vendor Assistant";
-    }
-
-    if (
-      location.pathname.includes(
-        "/chatbot"
-      )
-    ) {
-      return "AI Wedding Assistant";
-    }
-
-    if (
-      location.pathname.includes(
-        "/insights"
-      )
-    ) {
-      return "AI Wedding Insights";
-    }
-
-    if (
-      location.pathname.includes("/ai")
-    ) {
-      return "AI Wedding Planner";
-    }
-
-    if (
-      location.pathname.includes("/edit")
-    ) {
-      return "Edit Wedding";
-    }
-
-    return weddingId
-      ? "Wedding Overview"
-      : "WeddingVerse";
+    return weddingId ? "Wedding Overview" : "WeddingVerse AI";
   };
 
   const pageTitle = getPageTitle();
 
   return (
-    <header
-      className="
-        bg-white/90
-        dark:bg-gray-900/90
-        backdrop-blur-xl
-        border-b
-        border-gray-100
-        dark:border-gray-800
-        transition-colors
-        duration-300
-      "
-    >
-      <div
-        className="
-          min-h-[76px]
-          px-4
-          sm:px-6
-          lg:px-8
-          flex
-          items-center
-          justify-between
-          gap-4
-        "
-      >
-
-        {/* =================================================
-            LEFT SIDE
-        ================================================= */}
-
-        <div className="flex items-center gap-4 pl-14 lg:pl-0">
-
+    <header className="bg-white/80 backdrop-blur-xl border-b border-slate-200/70 sticky top-0 z-30 transition-all">
+      <div className="min-h-[72px] px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
+        {/* LEFT SIDE: Title & Breadcrumbs */}
+        <div className="flex items-center gap-4 pl-12 lg:pl-0">
           <div>
-
             <div className="flex items-center gap-2">
-
-              <h1
-                className="
-                  text-xl
-                  md:text-2xl
-                  font-black
-                  text-gray-900
-                  dark:text-white
-                  transition-colors
-                "
-              >
+              <h1 className="text-xl sm:text-2xl font-black font-display text-slate-900 tracking-tight">
                 {pageTitle}
               </h1>
 
               {pageTitle.includes("AI") && (
-                <span
-                  className="
-                    hidden
-                    sm:inline-flex
-                    items-center
-                    gap-1
-                    px-2.5
-                    py-1
-                    rounded-full
-                    bg-purple-100
-                    dark:bg-purple-900/40
-                    text-purple-600
-                    dark:text-purple-300
-                    text-[10px]
-                    font-black
-                    uppercase
-                    tracking-wider
-                  "
-                >
-                  <Sparkles size={11} />
-                  Powered by AI
+                <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-rose-500/10 to-purple-500/10 border border-rose-500/20 text-rose-600 text-[10px] font-black uppercase tracking-wider">
+                  <Sparkles size={11} className="text-rose-500" />
+                  AI Powered
                 </span>
               )}
-
             </div>
-
-            <p
-              className="
-                hidden
-                md:block
-                text-xs
-                text-gray-400
-                dark:text-gray-500
-                mt-1
-              "
-            >
-              Manage your wedding beautifully
+            <p className="hidden md:block text-xs text-slate-400 font-medium mt-0.5">
+              Intelligent Luxury Wedding Planning Platform
             </p>
-
           </div>
-
         </div>
 
-
-        {/* =================================================
-            RIGHT SIDE
-        ================================================= */}
-
-        <div className="flex items-center gap-2 sm:gap-4">
-
-          {/* =================================================
-              SEARCH
-          ================================================= */}
-
-          <button
-            type="button"
-            className="
-              hidden
-              md:flex
-              items-center
-              gap-3
-              w-52
-              lg:w-64
-              px-4
-              py-2.5
-              rounded-xl
-              bg-gray-50
-              dark:bg-gray-800
-              border
-              border-gray-100
-              dark:border-gray-700
-              text-gray-400
-              hover:bg-gray-100
-              dark:hover:bg-gray-700
-              hover:text-gray-600
-              dark:hover:text-gray-200
-              transition
-            "
+        {/* RIGHT SIDE: Search, Quick Actions, Notifications & Profile */}
+        <div className="flex items-center gap-2 sm:gap-3">
+          {/* Quick Create Wedding Button */}
+          <Link
+            to="/weddings/new"
+            className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-rose-50 text-rose-600 hover:bg-rose-100/80 font-bold text-xs border border-rose-200/60 transition"
           >
-            <Search size={18} />
+            <Plus size={15} />
+            <span>New Wedding</span>
+          </Link>
 
-            <span className="text-sm">
-              Search...
-            </span>
-
-            <span
-              className="
-                ml-auto
-                hidden
-                lg:inline-flex
-                items-center
-                justify-center
-                px-1.5
-                py-0.5
-                rounded
-                bg-white
-                dark:bg-gray-900
-                border
-                border-gray-200
-                dark:border-gray-700
-                text-[10px]
-                font-bold
-                text-gray-400
-              "
-            >
-              /
-            </span>
-
-          </button>
-
-
-          {/* =================================================
-              AI BUTTON
-          ================================================= */}
-
+          {/* AI Insights Quick Trigger */}
           {weddingId && (
-            <a
-              href={`/weddings/${weddingId}/insights`}
-              className="
-                hidden
-                sm:flex
-                items-center
-                gap-2
-                px-3.5
-                py-2.5
-                rounded-xl
-                bg-gradient-to-r
-                from-pink-600
-                to-purple-600
-                text-white
-                text-sm
-                font-bold
-                shadow-md
-                shadow-pink-200
-                dark:shadow-pink-950/30
-                hover:shadow-lg
-                hover:-translate-y-0.5
-                transition
-              "
+            <Link
+              to={`/weddings/${weddingId}/insights`}
+              className="hidden md:flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 hover:shadow-rose-500/30 hover:-translate-y-0.5 transition"
             >
-              <Sparkles size={16} />
-
-              <span className="hidden lg:inline">
-                AI Insights
-              </span>
-            </a>
+              <Sparkles size={14} />
+              <span>AI Insights</span>
+            </Link>
           )}
 
-
-          {/* =================================================
-              NOTIFICATIONS
-          ================================================= */}
-
+          {/* Notifications */}
           <NotificationDropdown />
 
+          {/* Vertical Divider */}
+          <div className="hidden sm:block h-8 w-px bg-slate-200" />
 
-          {/* =================================================
-              DIVIDER
-          ================================================= */}
-
-          <div
-            className="
-              hidden
-              sm:block
-              h-9
-              w-px
-              bg-gray-200
-              dark:bg-gray-700
-            "
-          />
-
-
-          {/* =================================================
-              PROFILE
-          ================================================= */}
-
-          <button
-            type="button"
-            className="
-              flex
-              items-center
-              gap-3
-              rounded-xl
-              px-2
-              py-1.5
-              hover:bg-gray-50
-              dark:hover:bg-gray-800
-              transition
-            "
-          >
-
-            {/* Avatar */}
-
+          {/* Profile Badge */}
+          <div className="flex items-center gap-2.5 pl-1 py-1 pr-2 rounded-xl bg-slate-50 border border-slate-200/70">
             <div className="relative">
-
-              <div
-                className="
-                  w-10
-                  h-10
-                  rounded-xl
-                  bg-gradient-to-br
-                  from-pink-500
-                  via-purple-500
-                  to-indigo-600
-                  text-white
-                  flex
-                  items-center
-                  justify-center
-                  font-black
-                  shadow-md
-                "
-              >
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-tr from-rose-500 via-pink-500 to-purple-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
                 {firstLetter}
               </div>
-
-              {/* Online indicator */}
-
-              <span
-                className="
-                  absolute
-                  -right-0.5
-                  -bottom-0.5
-                  w-3
-                  h-3
-                  rounded-full
-                  bg-green-500
-                  border-2
-                  border-white
-                  dark:border-gray-900
-                "
-              />
-
+              <span className="absolute -right-0.5 -bottom-0.5 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-white" />
             </div>
 
-
-            {/* User information */}
-
-            <div
-              className="
-                hidden
-                lg:block
-                text-left
-                max-w-[150px]
-              "
-            >
-
-              <p
-                className="
-                  font-bold
-                  text-sm
-                  text-gray-900
-                  dark:text-white
-                  truncate
-                "
-              >
-                {user?.fullName || "User"}
+            <div className="hidden md:block text-left max-w-[120px]">
+              <p className="font-bold text-xs text-slate-800 truncate leading-tight">
+                {user?.fullName || "Account"}
               </p>
-
-              <p
-                className="
-                  text-xs
-                  text-gray-400
-                  dark:text-gray-500
-                  truncate
-                "
-              >
-                {user?.email || "Welcome back"}
+              <p className="text-[10px] text-slate-400 truncate">
+                {user?.role || "Planner"}
               </p>
-
             </div>
-
-
-            <ChevronDown
-              size={16}
-              className="
-                hidden
-                lg:block
-                text-gray-400
-                dark:text-gray-500
-              "
-            />
-
-          </button>
-
+          </div>
         </div>
-
       </div>
     </header>
   );

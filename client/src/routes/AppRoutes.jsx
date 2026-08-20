@@ -160,6 +160,11 @@ function AppRoutes() {
           element={<WeddingPlanResult />}
         />
 
+        <Route
+          path="/weddings/:weddingId/ai-plan"
+          element={<WeddingPlanResult />}
+        />
+
 
         {/* ==================================================
             TASKS / PLANNING CHECKLIST

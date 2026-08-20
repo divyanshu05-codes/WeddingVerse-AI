@@ -87,7 +87,7 @@ const protect = asyncHandler(
       decoded =
         jwt.verify(
           token,
-          process.env.JWT_SECRET
+          process.env.JWT_SECRET || "weddingverse_super_secret_jwt_key_2026"
         );
 
     } catch (error) {

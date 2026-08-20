@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
+import { Mail, Lock, Eye, EyeOff, Sparkles, ArrowRight, ShieldCheck, Heart } from "lucide-react";
 import { loginUser } from "../services/auth.api";
 import { useAuth } from "../../../context/useAuth";
-
 import toast from "react-hot-toast";
 
 function LoginForm() {
@@ -16,15 +15,24 @@ function LoginForm() {
     rememberMe: false,
   });
 
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
-
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  const fillDemoCredentials = () => {
+    setFormData({
+      email: "demo@weddingverse.ai",
+      password: "password123",
+      rememberMe: true,
+    });
+    toast.success("Demo credentials loaded!");
   };
 
   const handleSubmit = async (e) => {
@@ -32,22 +40,17 @@ function LoginForm() {
 
     try {
       setLoading(true);
-
       await loginUser(formData);
-
       await fetchUser();
 
-      toast.success("Welcome Back!");
-
+      toast.success("Welcome Back to WeddingVerse!");
       navigate("/dashboard", {
         replace: true,
       });
     } catch (error) {
       console.error("Login Error:", error);
-
       toast.error(
-        error.response?.data?.message ||
-          "Login Failed"
+        error.response?.data?.message || "Login Failed. Please check your credentials."
       );
     } finally {
       setLoading(false);
@@ -55,109 +58,131 @@ function LoginForm() {
   };
 
   return (
-    <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
+    <div className="w-full">
+      {/* Header */}
+      <div className="text-center sm:text-left mb-8">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-50 border border-rose-100 text-rose-600 text-xs font-bold uppercase tracking-wider mb-3">
+          <Sparkles size={13} className="text-rose-500" />
+          Welcome Back
+        </div>
+        <h2 className="text-3xl font-black text-slate-900 font-display tracking-tight">
+          Sign In to Your Dream Wedding
+        </h2>
+        <p className="text-slate-500 text-sm mt-2">
+          Access your AI timeline, guests, budget, and vendors in one place.
+        </p>
+      </div>
 
-      <h1 className="text-3xl font-bold text-center text-pink-600">
-        WeddingVerse AI
-      </h1>
-
-      <p className="text-center text-gray-500 mt-2">
-        Welcome Back 👋
-      </p>
-
-      <form
-        onSubmit={handleSubmit}
-        className="mt-8 space-y-5"
-      >
-
-        {/* EMAIL */}
-
+      <form onSubmit={handleSubmit} className="space-y-5">
+        {/* EMAIL INPUT */}
         <div>
-          <label className="block mb-2 font-medium">
-            Email
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2">
+            Email Address
           </label>
-
-          <input
-            type="email"
-            name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="Enter your email"
-            className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            required
-          />
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <Mail size={18} />
+            </div>
+            <input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="you@example.com"
+              className="w-full pl-10 pr-4 py-3 bg-white/80 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition shadow-sm text-sm font-medium"
+              required
+            />
+          </div>
         </div>
 
-        {/* PASSWORD */}
-
+        {/* PASSWORD INPUT */}
         <div>
-          <label className="block mb-2 font-medium">
-            Password
-          </label>
-
-          <input
-            type="password"
-            name="password"
-            value={formData.password}
-            onChange={handleChange}
-            placeholder="Enter your password"
-            className="w-full border rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-pink-500"
-            required
-          />
+          <div className="flex items-center justify-between mb-2">
+            <label className="block text-xs font-bold uppercase tracking-wider text-slate-700">
+              Password
+            </label>
+            <Link
+              to="/forgot-password"
+              className="text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline transition"
+            >
+              Forgot password?
+            </Link>
+          </div>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+              <Lock size={18} />
+            </div>
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="Enter your password"
+              className="w-full pl-10 pr-11 py-3 bg-white/80 border border-slate-200 rounded-xl text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 transition shadow-sm text-sm font-medium"
+              required
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 transition cursor-pointer"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </button>
+          </div>
         </div>
 
-        {/* REMEMBER ME + FORGOT PASSWORD */}
-
-        <div className="flex items-center justify-between">
-
-          <label className="flex items-center gap-2 cursor-pointer text-sm text-gray-600">
+        {/* REMEMBER ME */}
+        <div className="flex items-center justify-between pt-1">
+          <label className="flex items-center gap-2.5 cursor-pointer text-xs font-semibold text-slate-600 select-none">
             <input
               type="checkbox"
               name="rememberMe"
               checked={formData.rememberMe}
               onChange={handleChange}
-              className="w-4 h-4 accent-pink-600 cursor-pointer"
+              className="w-4 h-4 rounded border-slate-300 text-rose-600 focus:ring-rose-500 cursor-pointer accent-rose-600"
             />
-
-            <span>
-              Remember me
-            </span>
+            <span>Keep me signed in for 30 days</span>
           </label>
-
-          <Link
-            to="/forgot-password"
-            className="text-sm text-pink-600 font-semibold hover:underline"
-          >
-            Forgot password?
-          </Link>
-
         </div>
 
-        {/* LOGIN */}
-
+        {/* SUBMIT BUTTON */}
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-pink-600 text-white py-3 rounded-lg hover:bg-pink-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full relative group overflow-hidden bg-gradient-to-r from-rose-600 via-pink-600 to-purple-600 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-rose-500/25 hover:shadow-rose-500/40 hover:-translate-y-0.5 active:translate-y-0 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 cursor-pointer text-sm"
         >
-          {loading
-            ? "Logging in..."
-            : "Login"}
+          {loading ? (
+            <>
+              <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              <span>Signing in...</span>
+            </>
+          ) : (
+            <>
+              <span>Sign In to Dashboard</span>
+              <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </>
+          )}
         </button>
 
-        {/* REGISTER */}
-
-        <p className="text-center">
-          Don't have an account?{" "}
-
-          <Link
-            to="/register"
-            className="text-pink-600 font-semibold hover:underline"
+        {/* QUICK DEMO & REGISTER LINKS */}
+        <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+          <button
+            type="button"
+            onClick={fillDemoCredentials}
+            className="text-slate-500 hover:text-rose-600 font-semibold transition cursor-pointer flex items-center gap-1"
           >
-            Register
-          </Link>
-        </p>
-
+            ⚡ Fill demo credentials
+          </button>
+          <p className="text-slate-600">
+            New here?{" "}
+            <Link
+              to="/register"
+              className="text-rose-600 font-bold hover:underline transition"
+            >
+              Create free account
+            </Link>
+          </p>
+        </div>
       </form>
     </div>
   );

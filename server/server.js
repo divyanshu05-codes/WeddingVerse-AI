@@ -20,9 +20,13 @@ const server = http.createServer(app);
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "https://wedding-verse-ai.vercel.app",
   process.env.CLIENT_URL,
 ].filter(Boolean);
-
 
 // ======================================================
 // SOCKET.IO
@@ -30,7 +34,17 @@ const allowedOrigins = [
 
 const io = new Server(server, {
   cors: {
-    origin: allowedOrigins,
+    origin: (origin, callback) => {
+      if (
+        !origin ||
+        allowedOrigins.includes(origin) ||
+        origin.startsWith("http://localhost:") ||
+        origin.startsWith("http://127.0.0.1:")
+      ) {
+        return callback(null, true);
+      }
+      return callback(new Error("CORS origin not allowed for socket"));
+    },
     credentials: true,
   },
 });

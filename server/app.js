@@ -16,19 +16,28 @@ const notificationRoutes = require("./src/routes/notification.routes");
 
 const app = express();
 const allowedOrigins = [
-    "http://localhost:5173",
-    "https://wedding-verse-ai.vercel.app"
-];
+  "http://localhost:5173",
+  "http://localhost:5174",
+  "http://localhost:3000",
+  "http://127.0.0.1:5173",
+  "http://127.0.0.1:5174",
+  "https://wedding-verse-ai.vercel.app",
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
 app.use(cors({
     origin: (origin, callback) => {
 
-        // Postman / server-to-server
+        // Postman / server-to-server / localhost dev
         if (!origin) {
             return callback(null, true);
         }
 
-        if (allowedOrigins.includes(origin)) {
+        if (
+          allowedOrigins.includes(origin) ||
+          origin.startsWith("http://localhost:") ||
+          origin.startsWith("http://127.0.0.1:")
+        ) {
             return callback(null, true);
         }
 
@@ -66,6 +75,9 @@ app.use(cors({
 
 app.use(cookieParser());
 app.use(express.json());
+
+// API v1 Routes
+app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/weddings", weddingRoutes);
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/guests", guestRoutes);
@@ -77,12 +89,19 @@ app.use("/api/v1/tasks", taskRoutes);
 app.use("/api/v1/notifications", notificationRoutes);
 
 app.get("/", (req, res) => {
-res.json({success: true,
-  message: "Marriage Planner API Running 🚀",
-});
+  res.json({
+    success: true,
+    message: "Marriage Planner API Running 🚀",
+  });
 });
 
-app.use("/api/v1/auth", authRoutes);
+app.use((req, res, next) => {
+  res.status(404).json({
+    success: false,
+    message: `API endpoint ${req.method} ${req.originalUrl} not found.`,
+  });
+});
+
 app.use(errorHandler);
 
 module.exports = app;

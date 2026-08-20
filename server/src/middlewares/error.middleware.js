@@ -55,9 +55,9 @@ const errorHandler = (err, req, res, next) => {
   }
 
   // ==========================================
-  // HIDE INTERNAL SERVER ERROR DETAILS
+  // HIDE INTERNAL SERVER ERROR DETAILS IN PRODUCTION
   // ==========================================
-  if (statusCode >= 500) {
+  if (statusCode >= 500 && process.env.NODE_ENV === "production") {
     message = "Internal Server Error";
   }
 
